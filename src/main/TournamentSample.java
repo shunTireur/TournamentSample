@@ -2,7 +2,6 @@ package main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import com.vaadin.ui.Tree;
@@ -21,81 +20,44 @@ public class TournamentSample {
 		int itemSize = (playerList.size() - 1) * 2 + 1;
 		System.out.println(itemSize);
 
+		Tree tree = new Tree();
+
 		String[] gameCell = new String[itemSize];
 		for (int i = 0; i < gameCell.length; i++) {
 			gameCell[i] = "item" + (i + 1);
+			tree.addItem(gameCell[i]);
 		}
 
-		int itemCnt = 0;
-		Tree tree = new Tree();
+		int parentId = 0;
+		int iCnt = 1;
+		int n = 1;
+		while (iCnt < gameCell.length) {
+			tree.setParent(gameCell[iCnt++], gameCell[parentId]);
+			if (iCnt >= gameCell.length) break;
+			tree.setParent(gameCell[iCnt++], gameCell[parentId]);
+			if (iCnt >= gameCell.length) break;
+			parentId++;
 
-		Object itemId = gameCell[itemCnt];
-		tree.addItem(itemId);
-		itemCnt++;
-
-		while (itemCnt < itemSize) {
-			// before action
-			String item1 = gameCell[itemCnt++];
-			tree.addItem(item1);
-			tree.setParent(item1, itemId);
-			String item2 = gameCell[itemCnt++];
-			tree.addItem(item2);
-			tree.setParent(item2, itemId);
-
-			// Step1
-			Object parentId = tree.getParent(itemId);
-			if (parentId == null) {
-				itemId = getNextItemId(gameCell, itemId);
-				continue;
-			}
-
-			// Step2
-			Object grandParentId = tree.getParent(parentId);
-			if (grandParentId == null) {
-				itemId = getNextItemId(gameCell, itemId);
-				continue;
-			}
-			Collection<?> children = tree.getChildren(grandParentId);
-			for (Object child : children) {
-				if (!child.equals(parentId)) {
-					// Step3
-					Collection<?> c = tree.getChildren(child);
-					if (c == null) {
-						itemId = child;
-					} else {
-						Object obj = getChildId(tree, c);
-						if (obj == null) {
-							itemId = getNextItemId(gameCell, itemId);
-						} else {
-							itemId = obj;
-						}
-					}
-					break;
+			if (4 <= parentId) {
+				parentId = parentId * 2 - 1;
+				for (int i = 4 * n + 1; i < parentId; i += 2) {
+					tree.setParent(gameCell[iCnt++], gameCell[i]);
+					if (iCnt >= gameCell.length) break;
+					tree.setParent(gameCell[iCnt++], gameCell[i]);
+					if (iCnt >= gameCell.length) break;
 				}
+				if (iCnt >= gameCell.length) break;
+				for (int i = 4 * n; i < parentId; i += 2) {
+					tree.setParent(gameCell[iCnt++], gameCell[i]);
+					if (iCnt >= gameCell.length) break;
+					tree.setParent(gameCell[iCnt++], gameCell[i]);
+					if (iCnt >= gameCell.length) break;
+				}
+				n++;
 			}
 		}
 
 		System.out.println(tree);
 	}
 
-	private static Object getNextItemId(String[] gameCell, Object itemId) {
-		Object obj = gameCell[0];
-		for (int i = 0; i < gameCell.length; i++) {
-			if (itemId == gameCell[i]) {
-				obj = gameCell[i + 1];
-				break;
-			}
-		}
-		return obj;
-	}
-
-	public static Object getChildId(Tree tree, Collection<?> children) {
-		for (Object child : children) {
-			Collection<?> c = tree.getChildren(child);
-			if (c == null) {
-				return child;
-			}
-		}
-		return null;
-	}
 }
