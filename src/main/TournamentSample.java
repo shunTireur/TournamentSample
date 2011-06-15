@@ -15,58 +15,49 @@ public class TournamentSample {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
-		TournamentSample ts = new TournamentSample();
-
 		List<String> playerList = new ArrayList<String>(Arrays.asList(players));
 
 		int itemSize = (playerList.size() - 1) * 2 + 1;
-		Object[] gameCell = new String[itemSize];
-		for (int i = 0; i < gameCell.length; i++) {
-			gameCell[i] = "item" + (i + 1);
-		}
+		System.out.println(itemSize);
 
-		Tree tree = ts.getTournamentTree(gameCell);
-
-	}
-
-	public Tree getTournamentTree(Object[] objs) {
 		Tree tree = new Tree();
 
-		for (int i = 0; i < objs.length; i++) {
-			tree.addItem(objs[i]);
+		String[] gameCell = new String[itemSize];
+		for (int i = 0; i < gameCell.length; i++) {
+			gameCell[i] = "item" + (i + 1);
+			tree.addItem(gameCell[i]);
 		}
 
 		int parentId = 0;
 		int iCnt = 1;
 		int n = 1;
-		while (iCnt < objs.length) {
-			tree.setParent(objs[iCnt++], objs[parentId]);
-			if (iCnt >= objs.length) break;
-			tree.setParent(objs[iCnt++], objs[parentId]);
-			if (iCnt >= objs.length) break;
+		while (iCnt < gameCell.length) {
+			tree.setParent(gameCell[iCnt++], gameCell[parentId]);
+			if (iCnt >= gameCell.length) break;
+			tree.setParent(gameCell[iCnt++], gameCell[parentId]);
+			if (iCnt >= gameCell.length) break;
 			parentId++;
 
 			if (4 <= parentId) {
 				parentId = parentId * 2 - 1;
 				for (int i = 4 * n + 1; i < parentId; i += 2) {
-					tree.setParent(objs[iCnt++], objs[i]);
-					if (iCnt >= objs.length) break;
-					tree.setParent(objs[iCnt++], objs[i]);
-					if (iCnt >= objs.length) break;
+					tree.setParent(gameCell[iCnt++], gameCell[i]);
+					if (iCnt >= gameCell.length) break;
+					tree.setParent(gameCell[iCnt++], gameCell[i]);
+					if (iCnt >= gameCell.length) break;
 				}
-				if (iCnt >= objs.length) break;
+				if (iCnt >= gameCell.length) break;
 				for (int i = 4 * n; i < parentId; i += 2) {
-					tree.setParent(objs[iCnt++], objs[i]);
-					if (iCnt >= objs.length) break;
-					tree.setParent(objs[iCnt++], objs[i]);
-					if (iCnt >= objs.length) break;
+					tree.setParent(gameCell[iCnt++], gameCell[i]);
+					if (iCnt >= gameCell.length) break;
+					tree.setParent(gameCell[iCnt++], gameCell[i]);
+					if (iCnt >= gameCell.length) break;
 				}
 				n++;
 			}
 		}
 
-		return tree;
+		System.out.println(tree);
 	}
 
 }
